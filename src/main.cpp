@@ -7,22 +7,24 @@ const int IR_pin = 21;
 unsigned long cnt = 0;
 boolean state = 0;
 
-// 600msのカウント数を1分間当たりに変換
 void Counter() {
-  if (cnt) {
-    cnt = (cnt * 100) / 20;
-  }
-
-  M5.Lcd.fillScreen(BLACK);
+  cnt = (cnt * 100) / 20;  // 600msのカウント数を1分間当たりに変換
 
   M5.Lcd.setTextFont(0);
   M5.Lcd.setTextSize(3);
-  M5.Lcd.setCursor(30, 10);
-  M5.Lcd.drawRightString(String(cnt), 290, 40, 7);
+  M5.Lcd.setTextFont(7);
+  M5.Lcd.setCursor(20, 40);
+
+  if (cnt >= 10 && cnt <= 99) {
+    M5.Lcd.print("0");
+  } else if (cnt < 10) {
+    M5.Lcd.print("00");
+  }
+  M5.Lcd.print(cnt);
 
   M5.Lcd.setCursor(190, 200);
-  M5.Lcd.setTextSize(3);
   M5.Lcd.setTextFont(0);
+  M5.Lcd.setTextSize(3);
   M5.Lcd.println("(r/min)");
 
   cnt = 0;
@@ -43,9 +45,7 @@ void setup() {
 }
 
 void loop() {
-  int data = 0;
-
-  data = digitalRead(IR_pin);
+  int data = digitalRead(IR_pin);
   if (data == 0 && state == 1) {
     state = 0;
     cnt++;
